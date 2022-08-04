@@ -2,6 +2,7 @@ package com.alt.validation.controller;
 
 import com.alt.validation.entity.Category;
 import com.alt.validation.repository.CategoryRepository;
+import com.mysql.cj.xdevapi.JsonArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,12 +34,23 @@ public class CategoryController {
     @PutMapping("/{id}")
     public Optional<Category> updateCategory(@PathVariable Long id, @RequestBody Category categoryPayload){
         Optional<Category> categoryById = categoryRepository.findById(id);
-        categoryById.ifPresent(request -> {
-            request.setName(categoryPayload.getName());
-            request.setDescription(categoryPayload.getDescription());
+        // Lambda expression
+        categoryById.ifPresent(res -> {
+            res.setName(categoryPayload.getName());
+            res.setDescription(categoryPayload.getDescription());
 
-            categoryRepository.save(request);
+            categoryRepository.save(res);
         });
         return categoryById;
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteCategoryById(@PathVariable Long id){
+        Optional<Category> categoryById = categoryRepository.findById(id);
+        // Lambda expression
+        categoryById.ifPresent(res ->
+                categoryRepository.delete(res)
+        );
+
     }
 }
